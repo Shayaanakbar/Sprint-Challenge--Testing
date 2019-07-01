@@ -7,10 +7,15 @@ const db = require('../data/dbConfig');
 const request = require('supertest');
 
 const mario = {
+  id: 1,
   title: "Mario's Dream Land",
   genre: 'Platform',
   releaseYear: 1994
 };
+
+const randomGame = {
+  title: 'missing strikes again'
+}
 
     describe('GET /', () => {
 
@@ -48,18 +53,32 @@ const mario = {
 
       expect(res.body).toEqual([]);
       });
-
     });
-
-
   });
 
 
   describe('POST /games', () => {
+    beforeEach(() => {
+      return db('games').truncate();
+  });
+
     it('should post a new game and return status 201', async () => {
     let res = await request(server).post('/games')
       .send(mario)
 
-    expect(res.status).toBe(201);
+    expect(res.body).toEqual(mario);
   });
-})
+
+    it('should return staus 201', async () => {
+      let res = await request(server).post('/games')
+      .send(mario)
+
+      expect(res.status).toBe(201);
+    });
+
+    it('should return status 421 if game info is missing', async () => {
+      let res = await request(server).post('/games')
+      .send(randomGame)
+      expect(res.status).toBe(421);
+    });
+});

@@ -19,9 +19,9 @@ server.post('/games', async (req, res) => {
   try {
     const newGame = await Games.add(req.body)
 
-    res.status(201).json({newGame})
+    res.status(201).json(newGame)
   } catch (error) {
-    res.status(500).json(error)
+    res.status(421).json(error)
   }
 });
 
